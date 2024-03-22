@@ -29,7 +29,6 @@ def display_choropleth(candidate):
     sonora = Mapper.new_map(region = 'sonora')
     sonora2 = sonora.to_crs("EPSG:4326")
     geo_df = sonora2
-
     fig = px.choropleth_mapbox(geo_df,
                             geojson=geo_df.geometry,
                             locations=geo_df.index,
@@ -37,7 +36,6 @@ def display_choropleth(candidate):
                             mapbox_style="open-street-map",
                             zoom=5)
     return fig
-
 
 app.run_server(debug=True)
 
