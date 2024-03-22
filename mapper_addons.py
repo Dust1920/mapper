@@ -11,8 +11,16 @@ def legend_df(xs):
     ud.reset_index(drop = True, inplace = True)
     return ud
 
-def create_legend(leg_df):
-    return 0
+def create_legend(legend_df, leg_cf, x,y, ax1, **kwargs):
+    s = kwargs.get('sep', 0.02)
+    print('Pato')
+    for i in legend_df.index:
+        leg_c, leg_t = legend_df.loc[i,'legend_colors'], legend_df.loc[i,'legend_names']
+        print(leg_c,leg_t)
+        leg_cf[2] = leg_cf[2] if leg_cf[2] != 'None' else None
+        ax1.annotate(f'● {leg_t}', xy = (1.5e6,2e6), xytext=(x * 1e6, (y - s * i) * 1e6)
+                    , color = leg_c, weight = leg_cf[2], fontsize = leg_cf[0])
+        
 
 def text_block(content, c_text, ax, **kwargs):
     text_conf = kwargs.get('text_cf',[24,'black'])
@@ -42,7 +50,7 @@ def arrow_block(content, c_flecha, c_text, config, ax, **kwargs):
     ax.annotate(content, xy= c_flecha, xytext= c_text, arrowprops = arrow_cfig,
                 fontsize = fs, color = fc, weight = fw)
 
-def read_template(map, template, ax, **kwargs):
+def read_template2(map, template, ax, **kwargs):
     color_t = template['color_relleno']
     map.plot(color = color_t, ax = ax)
     ib_0 = list(template.index)[0]
@@ -78,18 +86,23 @@ def read_template(map, template, ax, **kwargs):
         ax.set_axis_off()
     return 0
 
-def read_template(map, template, ax):
+
+def read_template(map, template, ax, **kwargs):
     color_t = template['color_relleno']
     map.plot(color = color_t, ax = ax)
     ib_0 = list(template.index)[0]
     try:
+        print(q)
         legend = template.loc[ib_0, 'legend_colors']
         if not pd.isna(legend):
-                legend_df = legend_df(template)
-                leg_conf = template.loc[ib_0,'legend_config']
-                create_legend(legend_df, ax)
-    except:
-            print('AAA')
+                leg_df = legend_df(template)
+                print(leg_df)
+                leg_conf = gc.text_to_list(template.loc[ib_0,'legend_config'])
+                x, y = template.loc[ib_0, 'legend_x'], template.loc[ib_0, 'legend_y']
+                print(x,y)
+                create_legend(leg_df,leg_conf, x, y, ax, **kwargs)
+    except Exception as e:
+            print(e)
     title = template.loc[ib_0,'title']
     title_config = gc.text_to_list(template.loc[ib_0,'title_conf'])
     fw = title_config[2] if title_config[2]!= 'None' else None
@@ -114,6 +127,7 @@ def read_template(map, template, ax):
         else:
             text_block(template.loc[reg,'texto'], t_coords, ax,
                        text_cf = text_cfig)
+    print(template)
     if int(ac_bd[0]):
         bd = gc.text_to_list(template.loc[ib_0,'bd'])
         print(bd)
