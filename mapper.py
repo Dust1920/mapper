@@ -16,7 +16,14 @@ def new_map(**kwargs):
         mptype = 'ent'
         id = '00'
     file_path = f'geodata\\region\\{state}\\conjunto_de_datos\\{id}{mptype}.shp'
-    return gpd.read_file(file_path)
+    df = gpd.read_file(file_path)
+    if state == 'rpmex':
+        df = df.sort_values('CVE_ENT')
+    else:
+        df = df.sort_values('CVE_MUN')
+    df.drop(columns= ['CVEGEO'], inplace = True)
+    df.set_index(['NOMGEO'], drop = True, inplace = True)
+    return df
 
 def color_data_map(mapa, data, col_data, color, color_rule, **kwargs):
     mapa = map_data.data_map(mapa, data, col_data)
