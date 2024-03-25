@@ -29,6 +29,16 @@ def text_to_list(text, **kwargs):
     return l
 
 
+def plot_line(start_point,end_point, ax, **kwargs):
+    cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
+    if cf[0]:
+        x_s = start_point[0]
+        y_s = start_point[1]
+        x_f = end_point[0]
+        y_f = end_point[1]
+        ax.plot([x_s,x_f], [y_s, y_f],
+                color = cf[1], marker = cf[2], ms = cf[3], ls = cf[4], lw = cf[5])
+
 
 def plot_rectangle_corners(corner_1,corner_2, ax, config):
         if config[0]:
@@ -45,8 +55,8 @@ def plot_rectangle_corners(corner_1,corner_2, ax, config):
             ax.plot([cor_1x,cor_1x],[cor_1y,cor_2y],
                     color = config[1], marker = config[2], ms = config[3], ls = config[4], lw = config[5])
 
+
 def plot_rectangle(corner, rec_dim, ax, **kwargs):
     cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
     corner_2 = tuple([corner[0] + rec_dim[0],corner[1] + rec_dim[1]])
     plot_rectangle_corners(corner, corner_2, ax, cf)
-
