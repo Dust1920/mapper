@@ -29,3 +29,24 @@ def text_to_list(text, **kwargs):
     return l
 
 
+
+def plot_rectangle_corners(corner_1,corner_2, ax, config):
+        if config[0]:
+            cor_1x = corner_1[0]
+            cor_1y = corner_1[1]
+            cor_2x = corner_2[0]
+            cor_2y = corner_2[1]
+            ax.plot([cor_1x,cor_2x],[cor_1y,cor_1y],
+                    color = config[1], marker = config[2], ms = config[3], ls = config[4], lw = config[5])
+            ax.plot([cor_2x,cor_2x],[cor_2y,cor_1y],
+                    color = config[1], marker = config[2], ms = config[3], ls = config[4], lw = config[5])
+            ax.plot([cor_2x,cor_1x],[cor_2y,cor_2y],
+                    color = config[1], marker = config[2], ms = config[3], ls = config[4], lw = config[5])
+            ax.plot([cor_1x,cor_1x],[cor_1y,cor_2y],
+                    color = config[1], marker = config[2], ms = config[3], ls = config[4], lw = config[5])
+
+def plot_rectangle(corner, rec_dim, ax, **kwargs):
+    cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
+    corner_2 = tuple([corner[0] + rec_dim[0],corner[1] + rec_dim[1]])
+    plot_rectangle_corners(corner, corner_2, ax, cf)
+

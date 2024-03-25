@@ -95,6 +95,16 @@ def read_template(map, template, ax, **kwargs):
                 leg_conf = gc.text_to_list(template.loc[ib_0,'legend_config'])
                 x, y = template.loc[ib_0, 'legend_x'], template.loc[ib_0, 'legend_y']
                 create_legend(leg_df,leg_conf, x, y, ax, **kwargs)
+                box =template.loc[ib_0,'legend_border_style']
+                if int(box[0]):
+                    c1  =gc.text_to_list(template.loc[ib_0,'legend_border_corner1'])
+                    c_dim = gc.text_to_list(template.loc[ib_0, 'legend_border_dims'])
+                    style = template.loc[ib_0, 'legend_border_style']
+                    if pd.isna(style):
+                        gc.plot_rectangle(c1, c_dim, ax)
+                    else:
+                        style = gc.text_to_list(style)
+                        gc.plot_rectangle(c1, c_dim, ax, config = style)
     except Exception as e:
             print(e)
     title = template.loc[ib_0,'title']
