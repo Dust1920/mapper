@@ -3,6 +3,7 @@ import mapper_data as map_data
 import mapper_getfiles as map_file
 import geopandas as gpd
 
+
 def new_map(**kwargs):
     state = kwargs.get('region','all')
     mptype = kwargs.get('mptype','mun')
@@ -25,10 +26,12 @@ def new_map(**kwargs):
     df.set_index(['NOMGEO'], drop = True, inplace = True)
     return df
 
+
 def color_data_map(mapa, data, col_data, color, color_rule, **kwargs):
     mapa = map_data.data_map(mapa, data, col_data)
     mapa = map_color.color_map(mapa, color, color_rule, **kwargs)
     return mapa 
+
 
 def template_map(mapa, template, ax):
     return 0
