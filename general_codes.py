@@ -60,3 +60,22 @@ def plot_rectangle(corner, rec_dim, ax, **kwargs):
     cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
     corner_2 = tuple([corner[0] + rec_dim[0],corner[1] + rec_dim[1]])
     plot_rectangle_corners(corner, corner_2, ax, cf)
+
+
+all_maps = {'Estados': 'ent.shp',
+                    'Municipios':'mun.shp',
+                    'AGEB': 'a.shp',
+                    'Locs. Puntuales Rur': 'lpr.shp',
+                    'Locs. Urb y Rur Amnzs': 'l.shp'}
+state_maps = {'Estados': 'ent.shp',
+                    'Municipios': 'mun.shp',
+                    'AGEBRur': 'ar.shp',
+                    'Locs. Puntuales Rur': 'lpr.shp',
+                    'Insular': 'ti.shp',
+                    'Polys. Exts. Rurales': 'pe.shp',
+                    'Polys. Exts. Manzanas': 'pem.shp',
+                    'AGEB': 'a.shp',
+                    'Manzanas': 'm.shp',
+                    'Frentes Mzns': 'fm.shp',
+                    'Vialidad': 'e.shp',
+                    'Caserio Disperso': 'cd.shp'}
