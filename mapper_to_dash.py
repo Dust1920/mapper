@@ -22,6 +22,7 @@ app.layout = html.Div([
 ])
 
 
+
 @app.callback(
     Output("graph", "figure"), 
     Input("candidate", "value"))
@@ -37,8 +38,9 @@ def display_choropleth(candidate):
                             zoom=5)
     return fig
 
+# if __name__ == '__main__':
+#     app.run_server(host='10.11.12.13')
 app.run_server(debug=True)
 
 
 df = px.data.election()
-
