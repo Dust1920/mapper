@@ -16,6 +16,20 @@ def call_template(region, template):
     return temp_df
 
 
+def print_regions(texts,p, ax, **kwargs):
+    n_cols = kwargs.get('ncols',2)
+    block = len(texts) // n_cols
+    sep_x = kwargs.get('sx', 0.9e5)
+    sep_y = kwargs.get('sy', 0.15e5)
+    mun_x = p[0]
+    mun_y = p[1]
+    for k,mun in enumerate(texts):
+        cve = f'0{k+1}' if k+1<10 else f'{k+1}'
+        text = f'{cve} {mun}'
+        ax.annotate(text=text, xy = (mun_x, mun_y), xytext= (mun_x + k // block * sep_x ,mun_y - k % block *sep_y),
+                    fontsize = 12)
+        
+
 def legend_df(xs):
     u = xs[['legend_colors','legend_names']]
     i = 0

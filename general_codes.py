@@ -29,6 +29,12 @@ def text_to_list(text, **kwargs):
     return l
 
 
+def set_data(df):
+    df_c = list(df.columns)
+    gi = df_c.index('geometry')
+    return df_c[gi + 1:]
+
+
 def plot_line(start_point,end_point, ax, **kwargs):
     cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
     if cf[0]:
