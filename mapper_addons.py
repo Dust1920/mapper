@@ -133,5 +133,31 @@ def read_template(map, template, ax, **kwargs):
     return 0
 
 
+def scheme_to_interval(mapa, col, scheme):
+    schemes = {
+        'quantiles': mapc.Quantiles,
+        'percentiles':mapc.Percentiles
+    }
+    raw_interval = str(schemes[scheme](mapa[col]))
+    u = raw_interval.split('\n')[4:]
+    uv = [q.split('|')[0].rstrip() for q in u]
+    mm = [q[1:-1].split(',') for q in uv]
+    intervals = []
+    for p in mm:
+        for pp in p:
+            gc.actu_list(intervals, float(pp))
+    return intervals
+
+def legend_box(p, text, ax, **kwargs):
+    box_props = kwargs.get('bbox_props',
+                           {'fc':'green',
+                            'ec': 'red',
+                            'lw': 2} )
+    ax.annotate(text, xy = p, xytext = p
+                , bbox = box_props, fontsize = 20, va = 'top', ha = 'left', color = 'green')
+    ax.annotate(text, xy = p, xytext = p, color = 'white', weight = 'bold',
+                fontsize = 20, va = 'top', ha = 'left')
+
+
 # plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2)
 # ax.add_patch(plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2))

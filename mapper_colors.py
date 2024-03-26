@@ -4,6 +4,14 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 
 
+def generate_color(**kwargs):
+    a = kwargs.get('alpha', 1)
+    red = np.random.uniform()
+    green = np.random.uniform()
+    blue = np.random.uniform()
+    rgb = (red, green, blue, a)
+    return rgb
+
 def hex_to_RGB(hex_str):
     """ #FFFFFF -> [255,255,255]"""
     hex_str = hex_str[1:]
