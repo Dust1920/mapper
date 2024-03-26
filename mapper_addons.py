@@ -1,6 +1,7 @@
 import general_codes as gc
 import os
 import pandas as pd
+import mapclassify as mapc
 # Flechas, Texto, Ejes
 
 
@@ -130,3 +131,7 @@ def read_template(map, template, ax, **kwargs):
     if not template.loc[ib_0, 'axis']:
         ax.set_axis_off()
     return 0
+
+
+# plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2)
+# ax.add_patch(plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2))
