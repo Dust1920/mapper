@@ -149,14 +149,22 @@ def scheme_to_interval(mapa, col, scheme):
     return intervals
 
 def legend_box(p, text, ax, **kwargs):
-    box_props = kwargs.get('bbox_props',
-                           {'fc':'green',
-                            'ec': 'red',
-                            'lw': 2} )
+    default = {
+        'bbox_config':{'fc':'green',
+                        'ec': 'red',
+                        'lw': 2},
+        'text_config': {
+            'fontsize' : 20,
+            'color': 'white',
+            'weight': 'bold'
+        }
+    }
+    box_props = kwargs.get('bbox_props', default['bbox_config'])
+    text_props = kwargs.get('txt_props', default['text_config'])
     ax.annotate(text, xy = p, xytext = p
-                , bbox = box_props, fontsize = 20, va = 'top', ha = 'left', color = 'green')
-    ax.annotate(text, xy = p, xytext = p, color = 'white', weight = 'bold',
-                fontsize = 20, va = 'top', ha = 'left')
+                , bbox = box_props, fontsize = text_props['fontsize'], va = 'top', ha = 'left', color = box_props['fc'])
+    ax.annotate(text, xy = p, xytext = p, color = text_props['color'], weight = 'bold',
+                fontsize = text_props['fontsize'], va = 'top', ha = 'left')
 
 
 # plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2)

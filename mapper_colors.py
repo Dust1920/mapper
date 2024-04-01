@@ -2,7 +2,7 @@ import general_codes as gc
 import geopandas as gpd
 import numpy as np
 from matplotlib.colors import ListedColormap
-
+import mapper_addons as addon
 
 def generate_color(**kwargs):
     a = kwargs.get('alpha', 1)
@@ -41,6 +41,19 @@ def custom_cmap(colors: dict):
     return ListedColormap(colormap)    
 
 
+def adapt_cmap(cmap: dict, partition):
+    ncolors = len(partition) - 1
+    if len(cmap.values()) >= ncolors:
+        return {i:cmap[i] for i in range(ncolors)}
+    else:
+        k = len(cmap.values())
+        while k < ncolors:
+            cmap[k] = generate_color()
+            k = k + 1
+        return cmap
+
+
+
 def code_values(codes: list, colors: dict):
     """
     Crea un diccionario personalizado con una galería de colores y \nun codigo para cada color. 
@@ -61,3 +74,15 @@ def color_map(mp: gpd.GeoDataFrame, col, color_rules, ax):
     mp.plot(color = mp[f'color_{col}'].to_list(), ax = ax)
     mp.boundary.plot(color = 'white', lw = 1, ax = ax)
     ax.set_axis_off()
+
+def cmap_by_partition(mapa, data, scheme, colors):
+    partition = addon.scheme_to_interval(mapa, data, scheme)
+    part_cmap = adapt_cmap(colors, partition)
+    return partition, part_cmap
+
+def color_by_data(mapa, col, scheme, colors):
+    partition, pmap = cmap_by_partition(mapa, col, scheme, colors)
+    col_data = mapa[col].to_list()
+    data_codes = [gc.loc_value_ival(partition, round(d, 2)) for d in col_data]
+    color_data = [pmap[d] for d in data_codes]
+    return color_data

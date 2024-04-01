@@ -85,3 +85,16 @@ state_maps = {'Estados': 'ent.shp',
                     'Frentes Mzns': 'fm.shp',
                     'Vialidad': 'e.shp',
                     'Caserio Disperso': 'cd.shp'}
+
+
+def loc_value_ival(interval, value):
+    for i in range(len(interval) - 1):
+        if i == 0:
+            if interval[i] <= value <= interval[i + 1]:
+                return i
+        else:
+            if interval[i] < value <= interval[i + 1]:
+                return i
+            else:
+                continue
+    return -1
