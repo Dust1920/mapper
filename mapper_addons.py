@@ -1,5 +1,6 @@
 import general_codes as gc
 import os
+import numpy as np
 import pandas as pd
 import mapclassify as mapc
 # Flechas, Texto, Ejes
@@ -148,7 +149,8 @@ def scheme_to_interval(mapa, col, scheme):
             gc.actu_list(intervals, float(pp))
     return intervals
 
-def legend_box(p, text, ax, **kwargs):
+
+def leg_text(pos, leg: dict, ax, **kwargs):
     default = {
         'bbox_config':{'fc':'green',
                         'ec': 'red',
@@ -161,10 +163,26 @@ def legend_box(p, text, ax, **kwargs):
     }
     box_props = kwargs.get('bbox_props', default['bbox_config'])
     text_props = kwargs.get('txt_props', default['text_config'])
-    ax.annotate(text, xy = p, xytext = p
-                , bbox = box_props, fontsize = text_props['fontsize'], va = 'top', ha = 'left', color = box_props['fc'])
-    ax.annotate(text, xy = p, xytext = p, color = text_props['color'], weight = 'bold',
-                fontsize = text_props['fontsize'], va = 'top', ha = 'left')
+    sx = kwargs.get('sep_x', 1e4)
+    sy = kwargs.get('sep_y', 2e4)
+    g = 0
+    labels = [len(k[-1]) for k in leg.values()]
+    lab_max = np.array(labels).max()
+    leg_list = list(leg.values())
+    max_text = leg_list[labels.index(lab_max)][-1]
+    ax.annotate(f'{max_text}\n'*(len(leg.keys()) - 1) + f'{max_text}', xy = pos, xytext=pos, ha = 'left',va = 'top',
+                bbox = box_props, fontsize = text_props['fontsize'], color = box_props['fc'])
+    for color, lt in leg.items():
+        if color == 'title':
+            ax.annotate(lt[2], xy = pos, xytext = (pos[0], pos[1] - g * sy),
+                        color = lt[1], fontsize = lt[0], ha = 'left', va = 'top')
+            g = g + 1
+        else:
+            ax.annotate(lt[1], xy = pos, xytext = (pos[0], pos[1] - g * sy),
+                        color = color, fontsize = lt[0], ha = 'left', va = 'top')
+            ax.annotate(lt[3], xy = pos, xytext = (pos[0] + sx, pos[1]- g * sy),
+                        color = color, fontsize = lt[2], ha = 'left', va = 'top')
+            g = g + 1
 
 
 # plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2)
