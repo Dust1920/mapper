@@ -170,7 +170,7 @@ def leg_text(pos, leg: dict, ax, **kwargs):
     lab_max = np.array(labels).max()
     leg_list = list(leg.values())
     max_text = leg_list[labels.index(lab_max)][-1]
-    ax.annotate(f'{max_text}\n'*(len(leg.keys()) - 1) + f'{max_text}', xy = pos, xytext=pos, ha = 'left',va = 'top',
+    ax.annotate(f'{max_text}\n' * len(leg.keys()) + f'{max_text}', xy = pos, xytext=pos, ha = 'left',va = 'top',
                 bbox = box_props, fontsize = text_props['fontsize'], color = box_props['fc'])
     for color, lt in leg.items():
         if color == 'title':
