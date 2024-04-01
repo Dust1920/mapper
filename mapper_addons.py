@@ -152,7 +152,7 @@ def scheme_to_interval(mapa, col, scheme):
 
 def leg_text(pos, leg: dict, ax, **kwargs):
     default = {
-        'bbox_config':{'fc':'green',
+        'bbox_config':{'fc':'lightblue',
                         'ec': 'red',
                         'lw': 2},
         'text_config': {
@@ -173,15 +173,16 @@ def leg_text(pos, leg: dict, ax, **kwargs):
     ax.annotate(f'{max_text}\n' * len(leg.keys()) + f'{max_text}', xy = pos, xytext=pos, ha = 'left',va = 'top',
                 bbox = box_props, fontsize = text_props['fontsize'], color = box_props['fc'])
     for color, lt in leg.items():
+        print(lt)
         if color == 'title':
-            ax.annotate(lt[2], xy = pos, xytext = (pos[0], pos[1] - g * sy),
-                        color = lt[1], fontsize = lt[0], ha = 'left', va = 'top')
+            ax.annotate(lt[-1], xy = pos, xytext = (pos[0], pos[1] - g * sy),
+                        color = lt[1], fontsize = lt[0], ha = 'left', va = 'top', weight = lt[2])
             g = g + 1
         else:
             ax.annotate(lt[1], xy = pos, xytext = (pos[0], pos[1] - g * sy),
                         color = color, fontsize = lt[0], ha = 'left', va = 'top')
-            ax.annotate(lt[3], xy = pos, xytext = (pos[0] + sx, pos[1]- g * sy),
-                        color = color, fontsize = lt[2], ha = 'left', va = 'top')
+            ax.annotate(lt[-1], xy = pos, xytext = (pos[0] + sx, pos[1]- g * sy),
+                        color = color, fontsize = lt[2], ha = 'left', va = 'top', weight = lt[3])
             g = g + 1
 
 
