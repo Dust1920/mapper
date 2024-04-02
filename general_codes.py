@@ -116,3 +116,21 @@ def prop_to_coords(p_prop, ax):
     p_x = map_xlim[0] * (1 - p_prop[0]) + map_xlim[1] * p_prop[0]
     p_y = map_ylim[0] * (1 - p_prop[1]) + map_ylim[1] * p_prop[1]
     return tuple([p_x, p_y])
+
+
+
+def list_to_str(lista):
+    st = ''
+    for s in lista:
+        st += f'{s},' if type(s) == int else f'{s},'
+    return st[:-1]
+
+def dict_to_template(dicc: dict, template, cols, **kwargs):
+    sk_rows = kwargs.get('skip_rows', 1)
+    lk = list(dicc.keys())
+    for k in range(len(dicc.keys())):
+            if type(dicc[lk[k]]) == list:
+                template.iloc[k + sk_rows, cols] = [lk[k], list_to_str(dicc[lk[k]])]
+            else:  
+                template.iloc[k + sk_rows, cols] = [lk[k], dicc[lk[k]]]
+
