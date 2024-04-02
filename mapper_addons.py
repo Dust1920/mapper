@@ -137,7 +137,6 @@ def read_template(map, template, ax, **kwargs):
         ax.set_axis_off()
     return 0
 
-
 def scheme_to_interval(mapa, col, scheme):
     schemes = {
         'quantiles': mapc.Quantiles,
@@ -182,10 +181,12 @@ def leg_text(pos, leg: dict, ax, **kwargs):
                         color = lt[1], fontsize = lt[0], ha = 'left', va = 'top', weight = lt[2])
             g = g + 1
         else:
+            # Icono
             ax.annotate(lt[1], xy = pos, xytext = (pos[0], pos[1] - g * sy),
                         color = color, fontsize = lt[0], ha = 'left', va = 'top')
+            # Texto
             ax.annotate(lt[-1], xy = pos, xytext = (pos[0] + sx, pos[1]- g * sy),
-                        color = color, fontsize = lt[2], ha = 'left', va = 'top', weight = lt[3])
+                        color = lt[4], fontsize = lt[2], ha = 'left', va = 'top', weight = lt[3])
             g = g + 1
 
 
@@ -196,41 +197,58 @@ def legend_content(labels, config):
     return config
 
 def legend_by_data(mapa, col, ax, **kwargs):
-    legend_pos = kwargs.get('legend_xy', [1.3e6,1.9e6])
-    legend_block = kwargs.get('legend_format',{
-    'title': [20, 'black', 'bold', 'Colores Prueba'],
-    0: [20, '●', 16, 'bold','Aereo'],
-    1: [20, '●', 16, 'bold','Terrestre'],
-    2: [20, '●', 16, 'bold', 'Maritimo'],
-    3: [20, '●', 16, 'bold', 'Maritimo_Terrestre'],
-    4: [20, '●', 16, 'bold', 'Maritimo_Aereo'],
+    default = {
+        'legend_config': {'title': [20, 'black', 'bold', 'Colores Prueba'],
+                          0: [20, '●', 16, 'bold', 'black', 'Aereo'],
+                          1: [20, '●', 16, 'bold', 'black', 'Terrestre'],
+                          2: [20, '●', 16, 'bold', 'black', 'Maritimo'],
+                          3: [20, '●', 16, 'bold', 'black', 'Maritimo_Terrestre'],
+                          4: [20, '●', 16, 'bold', 'black', 'Maritimo_Aereo']},
+        'data_config': {'scheme': 'quantiles',
+                        'colors': {0:mgal.isaf_plata,
+                                   1:mgal.isaf_naranja,
+                                   2:mgal.isaf_verde,
+                                   3:mgal.isaf_dorado,
+                                   4:mgal.isaf_guinda},
+                                   'interval': True}
     }
+    legend_pos = kwargs.get('legend_xy', [1.3e6,1.9e6])
+    legend_block = kwargs.get('legend_format',default['legend_config']
     )
-    data_properties = kwargs.get('data', {
-        'scheme': 'quantiles',
-        'colors': {0:mgal.isaf_plata,
-                   1:mgal.isaf_naranja,
-                   2:mgal.isaf_verde,
-                   3:mgal.isaf_dorado,
-                   4:mgal.isaf_guinda},
-        'interval': True
-    })
+    leg_line_dflt = [20, '●', 16, 'bold', 'black', 'Maritimo_Aereo']
+    data_properties = kwargs.get('data', default['data_config'])
+    for k, l in legend_block.items():
+        if l == None:
+            legend_block[k] = default['legend_config'][k]
+    for n, d in data_properties.items():
+        if d == None:
+            data_properties[n] = default['data_config'][n]
+
+    leg_labels =[]
+    partition = scheme_to_interval(mapa, col, data_properties['scheme'])
+    data_properties['colors'] = mapcol.adapt_cmap(data_properties['colors'], partition)
+    x = len(legend_block)
+    while x < len(data_properties['colors']) + 1:
+        legend_block[x - 1] = leg_line_dflt
+        x = x + 1
     leg_colorf = {'title': legend_block['title']}
     for k in range(len(data_properties['colors'])):
         leg_colorf[data_properties['colors'][k]] = legend_block[k]
     color_data = mapcol.color_by_data(mapa, col,
                                       data_properties['scheme'],
                                       data_properties['colors'])
-    leg_labels =[]
+
     if data_properties['interval']:
-        partition = scheme_to_interval(mapa, col, data_properties['scheme'])
         for k in range(len(partition) - 1):
             if k == len(partition) - 2:
                 leg_labels.append(f'[{partition[k]}, {partition[k + 1]}]')
             else:
                 leg_labels.append(f'[{partition[k]}, {partition[k + 1]})')
+    else:
+        for k in range(len(partition) - 1):
+            leg_labels.append(f'{partition[k]}, {partition[k + 1]}')
     leg_colorf = legend_content(leg_labels, leg_colorf)
-    
+    print(leg_colorf)
     mapa.plot(color = color_data, ax = ax)
     leg_text(legend_pos, leg_colorf, ax, sep_x = 2e4)
 

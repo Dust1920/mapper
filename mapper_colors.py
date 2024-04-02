@@ -6,10 +6,19 @@ import mapper_addons as addon
 
 def generate_color(**kwargs):
     a = kwargs.get('alpha', 1)
+    hx = kwargs.get('hex', 1)
     red = np.random.uniform()
     green = np.random.uniform()
     blue = np.random.uniform()
-    rgb = (red, green, blue, a)
+    if hx:
+        red_h = int(red * 255)
+        green_h = int(green * 255)
+        blue_h = int(blue * 255)
+        alpha = int(a * 255)
+        rgb_h = '#' + "".join([hex(red_h)[2:], hex(green_h)[2:], hex(blue_h)[2:], hex(alpha)[2:]])
+        return rgb_h
+    else:
+        rgb = (red, green, blue, a)
     return rgb
 
 def hex_to_RGB(hex_str):
