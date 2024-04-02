@@ -1,8 +1,12 @@
 import general_codes as gc
+import mapper_colors as mapcol
+import mapper_gallery as mgal
 import os
 import numpy as np
 import pandas as pd
 import mapclassify as mapc
+import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = "monospace"
 # Flechas, Texto, Ejes
 
 
@@ -173,7 +177,6 @@ def leg_text(pos, leg: dict, ax, **kwargs):
     ax.annotate(f'{max_text}\n' * len(leg.keys()) + f'{max_text}', xy = pos, xytext=pos, ha = 'left',va = 'top',
                 bbox = box_props, fontsize = text_props['fontsize'], color = box_props['fc'])
     for color, lt in leg.items():
-        print(lt)
         if color == 'title':
             ax.annotate(lt[-1], xy = pos, xytext = (pos[0], pos[1] - g * sy),
                         color = lt[1], fontsize = lt[0], ha = 'left', va = 'top', weight = lt[2])
@@ -186,5 +189,64 @@ def leg_text(pos, leg: dict, ax, **kwargs):
             g = g + 1
 
 
+def legend_content(labels, config):
+    lks = list(config.keys())
+    for k in range(1, len(lks)): 
+        config[lks[k]][-1] = labels[k - 1]
+    return config
+
+def legend_by_data(mapa, col, ax, **kwargs):
+    legend_pos = kwargs.get('legend_xy', [1.3e6,1.9e6])
+    legend_block = kwargs.get('legend_format',{
+    'title': [20, 'black', 'bold', 'Colores Prueba'],
+    0: [20, '●', 16, 'bold','Aereo'],
+    1: [20, '●', 16, 'bold','Terrestre'],
+    2: [20, '●', 16, 'bold', 'Maritimo'],
+    3: [20, '●', 16, 'bold', 'Maritimo_Terrestre'],
+    4: [20, '●', 16, 'bold', 'Maritimo_Aereo'],
+    }
+    )
+    data_properties = kwargs.get('data', {
+        'scheme': 'quantiles',
+        'colors': {0:mgal.isaf_plata,
+                   1:mgal.isaf_naranja,
+                   2:mgal.isaf_verde,
+                   3:mgal.isaf_dorado,
+                   4:mgal.isaf_guinda},
+        'interval': True
+    })
+    leg_colorf = {'title': legend_block['title']}
+    for k in range(len(data_properties['colors'])):
+        leg_colorf[data_properties['colors'][k]] = legend_block[k]
+    color_data = mapcol.color_by_data(mapa, col,
+                                      data_properties['scheme'],
+                                      data_properties['colors'])
+    leg_labels =[]
+    if data_properties['interval']:
+        partition = scheme_to_interval(mapa, col, data_properties['scheme'])
+        for k in range(len(partition) - 1):
+            if k == len(partition) - 2:
+                leg_labels.append(f'[{partition[k]}, {partition[k + 1]}]')
+            else:
+                leg_labels.append(f'[{partition[k]}, {partition[k + 1]})')
+    leg_colorf = legend_content(leg_labels, leg_colorf)
+    
+    mapa.plot(color = color_data, ax = ax)
+    leg_text(legend_pos, leg_colorf, ax, sep_x = 2e4)
+
 # plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2)
 # ax.add_patch(plt.Rectangle((0.2, 0.2), 0.6, 0.6, fill=None, color='black', linestyle='-', linewidth=2))
+    
+
+# chicago.plot(
+#     column="POP2010",
+#     legend=True,
+#     scheme="quantiles",
+#     figsize=(15, 10),
+#     missing_kwds={
+#         "color": "lightgrey",
+#         "edgecolor": "red",
+#         "hatch": "///",
+#         "label": "Missing values",
+#     },
+# )

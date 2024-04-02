@@ -29,12 +29,6 @@ def text_to_list(text, **kwargs):
     return l
 
 
-def set_data(df):
-    df_c = list(df.columns)
-    gi = df_c.index('geometry')
-    return df_c[gi + 1:]
-
-
 def plot_line(start_point,end_point, ax, **kwargs):
     cf = kwargs.get('config', [1,'black', '.',16,'-', 1])
     if cf[0]:
@@ -88,6 +82,14 @@ state_maps = {'Estados': 'ent.shp',
 
 
 def loc_value_ival(interval, value):
+    """
+    Input:\n
+    Particion: Lista \n
+    Valor : Flotante \n
+    \n
+    Output:\n
+    Posición en la partición: Entero
+    """
     for i in range(len(interval) - 1):
         if i == 0:
             if interval[i] <= value <= interval[i + 1]:
@@ -98,3 +100,19 @@ def loc_value_ival(interval, value):
             else:
                 continue
     return -1
+
+
+def prop_to_coords(p_prop, ax):
+    """
+    Input:\n
+    Mapa: GeoDataFrame\n
+    Posición relativa: (p_x,p_y) 0<= p_x,p_y <= 1\n
+    \n
+    Output:\n
+    Posición absoluta en el mapa. (x,y)
+    """
+    map_xlim = ax.get_xlim()
+    map_ylim = ax.get_ylim()
+    p_x = map_xlim[0] * (1 - p_prop[0]) + map_xlim[1] * p_prop[0]
+    p_y = map_ylim[0] * (1 - p_prop[1]) + map_ylim[1] * p_prop[1]
+    return tuple([p_x, p_y])
